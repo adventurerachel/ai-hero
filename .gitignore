@@ -1,1 +1,22 @@
 .env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Cursor
+.cursor/
+
+# OS
+.DS_Store
+Thumbs.db
