@@ -15,10 +15,12 @@ def initialize_resources():
     Cached so it only runs once per session, preventing slow reloads.
     """
     with st.spinner("Initializing data ingestion..."):
-        def filter(doc):
+        # Renamed from 'filter' to 'doc_filter' to avoid shadowing Python's built-in
+        def doc_filter(doc: dict) -> bool:
             return 'data-engineering' in doc['filename']
         
-        index = ingest.index_data(REPO_OWNER, REPO_NAME, filter=filter)
+        # Updated keyword argument to 'filter_func' to match the updated ingest.py
+        index = ingest.index_data(REPO_OWNER, REPO_NAME, filter_func=doc_filter)
     
     with st.spinner("Initializing search agent..."):
         agent = search_agent.init_agent(index, REPO_OWNER, REPO_NAME)
@@ -70,7 +72,7 @@ def main():
             # Build the context history for the agent
             history = build_message_history()
             
-            # Use the synchronous streaming method to avoid asyncio event loop conflicts in Streamlit
+            # Use the synchronous streaming method to avoid asyncio event loop conflicts
             with agent.run_stream_sync(prompt, message_history=history) as result:
                 # Stream the text output token by token
                 for text in result.stream_text_sync(debounce_by=0.01):
@@ -86,7 +88,7 @@ def main():
         # Add assistant response to session state
         st.session_state.messages.append({"role": "assistant", "content": full_response})
         
-        # Log the interaction (adapted from your CLI code)
+        # Log the interaction
         try:
             logs.log_interaction_to_file(agent, new_messages)
         except Exception as e:
