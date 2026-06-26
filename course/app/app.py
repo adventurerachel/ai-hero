@@ -86,7 +86,7 @@ def build_message_history():
 
 def main():
     st.set_page_config(page_title="AI FAQ Assistant", page_icon="🤖")
-    st.title("AI FAQ Assistant")
+    st.title("AI FAQ Assistant: DataTalks.Club Data Engineering Zoomcamp")
     st.caption(f"Repository: {REPO_OWNER}/{REPO_NAME}")
 
     # 1. Initialize Agent
