@@ -1,4 +1,14 @@
+# --- 1. LOAD ENVIRONMENT VARIABLES FIRST ---
+from pathlib import Path
+from dotenv import load_dotenv
+
+env_path = Path(__file__).parent.parent.parent / '.env'
+load_dotenv(dotenv_path=env_path)
+# -------------------------------------------
+
+import asyncio
 import streamlit as st
+from dataclasses import dataclass
 from pydantic_ai.messages import ModelRequest, ModelResponse, UserPromptPart, TextPart
 
 import ingest
@@ -8,18 +18,52 @@ import logs
 REPO_OWNER = "DataTalksClub"
 REPO_NAME = "faq"
 
+# --- HELPER FUNCTIONS FOR ASYNC STREAMING ---
+
+@dataclass
+class StreamHolder:
+    """A simple container to capture the new messages after the async stream finishes."""
+    new_messages: list = None
+
+def stream_async(async_gen):
+    """
+    Helper function to consume an async generator synchronously.
+    This allows us to stream async responses from pydantic-ai in Streamlit.
+    """
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        while True:
+            try:
+                yield loop.run_until_complete(async_gen.__anext__())
+            except StopAsyncIteration:
+                break
+    finally:
+        loop.close()
+
+# FIXED: Added 'agent' as an argument so the function has access to it
+async def get_agent_stream(agent, prompt, history, holder):
+    """
+    Async generator that yields text chunks from the pydantic-ai agent.
+    """
+    async with agent.run_stream(prompt, message_history=history) as result:
+        # Stream the text output token by token
+        # (Note: depending on your exact pydantic-ai version, this might be stream_text() instead of stream_output())
+        async for text in result.stream_text(debounce_by=0.01): 
+            yield text
+            
+        # Once the stream is complete, capture the new messages for logging
+        holder.new_messages = result.new_messages()
+
+# --- STREAMLIT APP LOGIC ---
+
 @st.cache_resource
 def initialize_resources():
-    """
-    Initialize the index and agent. 
-    Cached so it only runs once per session, preventing slow reloads.
-    """
+    """Initialize the index and agent. Cached so it only runs once per session."""
     with st.spinner("Initializing data ingestion..."):
-        # Renamed from 'filter' to 'doc_filter' to avoid shadowing Python's built-in
         def doc_filter(doc: dict) -> bool:
             return 'data-engineering' in doc['filename']
         
-        # Updated keyword argument to 'filter_func' to match the updated ingest.py
         index = ingest.index_data(REPO_OWNER, REPO_NAME, filter_func=doc_filter)
     
     with st.spinner("Initializing search agent..."):
@@ -28,11 +72,8 @@ def initialize_resources():
     return agent
 
 def build_message_history():
-    """
-    Converts Streamlit session state messages into Pydantic AI message history format.
-    """
+    """Converts Streamlit session state messages into Pydantic AI message history format."""
     history = []
-    # Exclude the last message (the current user prompt) as it's passed directly to the agent
     for msg in st.session_state.messages[:-1]:
         if msg["role"] == "user":
             history.append(ModelRequest(parts=[UserPromptPart(content=msg["content"])]))
@@ -69,30 +110,26 @@ def main():
             message_placeholder = st.empty()
             full_response = ""
             
-            # Build the context history for the agent
             history = build_message_history()
+            holder = StreamHolder()
             
-            # Use the synchronous streaming method to avoid asyncio event loop conflicts
-            with agent.run_stream_sync(prompt, message_history=history) as result:
-                # Stream the text output token by token
-                for text in result.stream_text_sync(debounce_by=0.01):
-                    full_response += text
-                    message_placeholder.markdown(full_response + "▌")
+            # FIXED: Passed the 'agent' object into the function here
+            for text in stream_async(get_agent_stream(agent, prompt, history, holder)):
+                full_response = text
+                message_placeholder.markdown(full_response + "▌")
                 
-                # Finalize the display (remove the blinking cursor)
-                message_placeholder.markdown(full_response)
-                
-                # Capture the new messages for logging
-                new_messages = result.new_messages()
+            # Finalize the display (remove the blinking cursor)
+            message_placeholder.markdown(full_response)
 
         # Add assistant response to session state
         st.session_state.messages.append({"role": "assistant", "content": full_response})
         
-        # Log the interaction
-        try:
-            logs.log_interaction_to_file(agent, new_messages)
-        except Exception as e:
-            st.warning(f"Could not log interaction: {e}")
+        # Log the interaction using the captured messages
+        if holder.new_messages:
+            try:
+                logs.log_interaction_to_file(agent, holder.new_messages)
+            except Exception as e:
+                st.warning(f"Could not log interaction: {e}")
 
 if __name__ == "__main__":
     main()
