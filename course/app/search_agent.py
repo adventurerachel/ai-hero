@@ -18,6 +18,12 @@ Format: [LINK TITLE](FULL_GITHUB_LINK)
 
 If the search doesn't return relevant results, let the user know and provide general guidance.
 
+CRITICAL INSTRUCTIONS FOR YOUR RESPONSES:
+1. BE CONCISE: Get straight to the point. Do not use filler words or introductory phrases like "Certainly!", "Based on the context,", or "In conclusion".
+2. NO REPETITION: Never repeat the same fact or rephrase the same point multiple times. Say it once clearly and move on.
+3. BREVITY: Keep your answers to 2-3 short paragraphs maximum unless the user explicitly asks for a detailed, long-form explanation.
+4. FORMATTING: Use bullet points if you are listing multiple items or distinct facts to make it easy to read.
+
 """
 
 def init_agent(index, repo_owner, repo_name):

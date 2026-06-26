@@ -59,15 +59,18 @@ async def get_agent_stream(agent, prompt, history, holder):
 
 @st.cache_resource
 def initialize_resources():
-    """Initialize the index and agent. Cached so it only runs once per session."""
-    with st.spinner("Initializing data ingestion..."):
-        def doc_filter(doc: dict) -> bool:
-            return 'data-engineering' in doc['filename']
-        
-        index = ingest.index_data(REPO_OWNER, REPO_NAME, filter_func=doc_filter)
+    st.write("Starting ingestion...")
     
-    with st.spinner("Initializing search agent..."):
-        agent = search_agent.init_agent(index, REPO_OWNER, REPO_NAME)
+    def doc_filter(doc: dict) -> bool:
+        return 'data-engineering' in doc['filename']
+    
+    index = ingest.index_data(REPO_OWNER, REPO_NAME, filter_func=doc_filter)
+
+    st.write("Index created")
+
+    agent = search_agent.init_agent(index, REPO_OWNER, REPO_NAME)
+
+    st.write("Agent created")
         
     return agent
 

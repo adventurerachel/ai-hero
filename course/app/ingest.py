@@ -22,10 +22,14 @@ def read_repo_data(repo_owner: str, repo_name: str) -> list[dict]:
                     under the 'content' key, and the relative file path under 'filename'.
     """
     url = f'https://codeload.github.com/{repo_owner}/{repo_name}/zip/refs/heads/main'
-    resp = requests.get(url)
+    
+    try:
+        resp = requests.get(url, timeout=20)
+        # Ensure the request was successful before trying to parse the zip
+        resp.raise_for_status()
 
-    # Ensure the request was successful before trying to parse the zip
-    resp.raise_for_status()
+    except requests.RequestException as e:
+        raise RuntimeError(f"Failed to download repository {repo_owner}/{repo_name}") from e
 
     repository_data = []
 
@@ -42,7 +46,7 @@ def read_repo_data(repo_owner: str, repo_name: str) -> list[dict]:
             continue
 
         with zf.open(file_info) as f_in:
-            content = f_in.read()
+            content = f_in.read().decode("utf-8")
             post = frontmatter.loads(content)
 
             # to_dict() includes both the frontmatter metadata AND the markdown body
