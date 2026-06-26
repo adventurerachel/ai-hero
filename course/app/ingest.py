@@ -10,7 +10,7 @@ from minsearch import Index
 def read_repo_data(repo_owner: str, repo_name: str) -> list[dict]:
     """
     Downloads a GitHub repository as a zip file and extracts metadata and content 
-    from all Markdown (.md) and MDX (.mdx) files.
+    from all Markdown (.md) and MDX (.mdx) files. 
 
     Args:
         repo_owner (str): The GitHub username or organization that owns the repository.
