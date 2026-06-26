@@ -8,3 +8,4 @@ Install dependencies:
 
 ```bash
 uv sync
+    "streamlit>=1.58.0"
