@@ -136,8 +136,8 @@ def index_data(
     """
     docs = read_repo_data(repo_owner, repo_name)
 
-    if filter is not None:
-        docs = [doc for doc in docs if filter(doc)]
+    if filter_func is not None:
+        docs = [doc for doc in docs if filter_func(doc)]
 
     if chunk:
         if chunking_params is None:
