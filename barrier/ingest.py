@@ -24,26 +24,49 @@ def read_repo_data(repo_owner: str, repo_name: str) -> list[dict]:
                     under the 'content' key, and the relative file path under 'filename'.
 
     """
-    url = f'https://codeload.github.com/{repo_owner}/{repo_name}/zip/refs/heads/main'
+    url = f'https://codeload.github.com/{repo_owner}/{repo_name}/zip/refs/heads/master'
     
     try:
         resp = requests.get(url, timeout=20)
 
         #Ensure the request was successful before trying to parse the zip
-        resp.raise_for_status
+        resp.raise_for_status()
     
     except requests.RequestException as e:
         raise RuntimeError(f"Failed to download repository {repo_owner}/{repo_name}") from e
 
     repository_data = []
 
+    print(resp.status_code)
+    print(resp.headers.get("Content-Type"))
+    print(resp.content[:200])
+
+    if resp.status_code != 200:
+        raise ValueError(f"Request failed: {resp.status_code} {resp.text[:200]}")
+
+    content_type = resp.headers.get("Content-Type", "")
+
+    if "zip" not in content_type:
+        raise ValueError(
+            f"Expected zip, got {content_type}. Preview: {resp.text[:200]}"
+        )
+
     zf = zipfile.ZipFile(io.BytesIO(resp.content))
+    print("\nZIP CONTENTS:")
+    print("\nTOTAL FILES IN ZIP:", len(zf.infolist()))
+    for f in zf.infolist()[:20]:
+        print(f.filename)
+        print("CHECK:", f.filename)
 
     for file_info in zf.infolist():
+        print("CHECKING:", f.filename)
+
         filename = file_info.filename.lower()
 
         if not (filename.endswith('.md') or filename.endswith('.mdx')):
             continue
+
+        print("FOUND MARKDOWN:", file_info.filename)
 
         with zf.open(file_info) as f_in:
             content = f_in.read().decode("utf-8")
@@ -57,39 +80,39 @@ def read_repo_data(repo_owner: str, repo_name: str) -> list[dict]:
             data['filename'] = filename_repo
             repository_data.append(data)
 
-        zf.close()
-        return repository_data
+    zf.close()
+    return repository_data
 
-    def sliding_window(seq: str, size: int, step: int) -> list[dict]:
-        """
-        Splits a sequence (like a string) into overlapping chunks using a sliding window approach.
-
-
-    Args:
-        seq (str): The sequence to be chunked.
-        size (int): The maximum size of each chunk.
-        step (int): The number of elements to step forward for the next chunk.
+def sliding_window(seq: str, size: int, step: int) -> list[dict]:
+    """
+    Splits a sequence (like a string) into overlapping chunks using a sliding window approach.
 
 
-    Returns:
-        list[dict]: A list of dictionaries, each containing the 'start' index
-            and the 'content' of the chunk.
+Args:
+    seq (str): The sequence to be chunked.
+    size (int): The maximum size of each chunk.
+    step (int): The number of elements to step forward for the next chunk.
 
-        """
-        if size <= 0 or step <= 0:
-            raise ValueError("size and step must be positive")
 
-        n = len(seq)
-        result = []
-        for i in range(0, n, step):
-            batch = seq[i:i+size]
-            result.append({'start': i, 'content': batch})
+Returns:
+    list[dict]: A list of dictionaries, each containing the 'start' index
+        and the 'content' of the chunk.
 
-            # if this chunk reached the end of the sequence, stop generating more
-            if i + size > n:
-                break
-        
-        return result
+    """
+    if size <= 0 or step <= 0:
+        raise ValueError("size and step must be positive")
+
+    n = len(seq)
+    result = []
+    for i in range(0, n, step):
+        batch = seq[i:i+size]
+        result.append({'start': i, 'content': batch})
+
+        # if this chunk reached the end of the sequence, stop generating more
+        if i + size > n:
+            break
+    
+    return result
 
 def chunk_documents(docs: list[dict], size: int=2000, step: int=1000) -> list[dict]:
     """
@@ -153,11 +176,15 @@ def index_data(
     if chunk:
         if chunking_params is None:
             chunking_params = {'size':2000, 'step': 1000}
-        docs - chunk_documents(docs, **chunking_params)
+        docs = chunk_documents(docs, **chunking_params)
     
     index = Index(
         text_fields=["content", "filename"],
     )
 
+    print(f"Loaded {len(docs)} documents")
+
+    for d in docs[:5]:
+        print(d["filename"])
     index.fit(docs)
     return index
