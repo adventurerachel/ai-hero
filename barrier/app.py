@@ -67,14 +67,17 @@ def initialize_resources():
     st.write("Starting ingestion...")
     
     def doc_filter(doc: dict) -> bool:
-        return 'barrier' in doc['filename']
-    
-    index = ingest.index_data(REPO_OWNER, REPO_NAME, filter_func=doc_filter)
+    #    return 'barrier' in doc['filename']
+        False
 
+    print("[initialize_resources] calling index_data...")        
+    index = ingest.index_data(REPO_OWNER, REPO_NAME)  #filter_func=doc_filter)
+    print("[initialize_resources] index_data returned")
     st.write("Index created")
 
+    print("[initialize_resources] calling init_agent...")
     agent = search_agent.init_agent(index, REPO_OWNER, REPO_NAME)
-
+    print("[initialize_resources] init_agent returned")
     st.write("Agent created")
         
     return agent
