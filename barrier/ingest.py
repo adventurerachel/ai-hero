@@ -1,3 +1,17 @@
+"""
+ingest.py
+ 
+Data pipeline for the Barrier AI FAQ assistant.
+ 
+Responsible for:
+1. Fetching: downloading a GitHub repository as a zip archive.
+2. Transforming: extracting Markdown documents and (optionally) splitting
+   long documents into smaller, overlapping chunks.
+3. Indexing: building a searchable minsearch.Index over the resulting
+   documents, ready for retrieval by the search agent.
+"""
+
+
 import io
 import zipfile
 import requests
@@ -12,27 +26,47 @@ def read_repo_data(repo_owner, repo_name):
         url = f"https://github.com/{repo_owner}/{repo_name}/archive/refs/heads/{branch}.zip"
         print(f"[read_repo_data] requesting {url}")
         try:
+            # timeout=60 prevents a slow/unresponsive connection from
+            # hanging the whole app indefinitely.
             resp = requests.get(url, timeout=60)
         except requests.exceptions.RequestException as e:
+            # Catches timeouts, DNS failures, connection resets, etc.
+            # Log and try the next branch rather than crashing.
             print(f"[read_repo_data] request failed for branch '{branch}: {e}")
             continue
         print(f"[read_repo_data] got status {resp.status_code}")
+        # A 200 status alone isn't proof of a valid zip — also check
+        # the Content-Type header to guard against unexpected HTML
+        # error pages being returned with a 200.
         if resp.status_code == 200 and "zip" in resp.headers.get("Content-Type", ""):
             break
     else:
+        # This 'else' belongs to the 'for' loop (not an if/else): it
+        # only runs if the loop finished WITHOUT hitting 'break',
+        # i.e. neither branch produced a valid zip.
         raise RuntimeError("Could not download repo ZIP from main or master")
 
     repository_data = []
+    # Wrap the raw response bytes in a file-like object so zipfile can
+    # read it directly from memory, without saving to disk first.
     zf = zipfile.ZipFile(io.BytesIO(resp.content))
     for file_info in zf.infolist():
         filename = file_info.filename.lower()
+        # Only interested in Markdown documentation, skip everything else
+        # (source code, images, config files, etc.)
         if not (filename.endswith('.md') or filename.endswith('.mdx')):
             continue
         with zf.open(file_info) as f_in:
             content = f_in.read()
+            # Many Markdown files begin with a YAML "frontmatter" block
+            # (e.g. title, date) before the actual content. This splits
+            # metadata from body text.
             post = frontmatter.loads(content)
-            data = post.to_dict()
+            data = post.to_dict() # body text lands under data['content']
 
+            # GitHub's zip wraps everything in a top-level folder, e.g.
+            # "barrier-master/README.md". Strip that off so we're left
+            # with a clean path relative to the repo root: "README.md".
             _, filename_repo = file_info.filename.split('/', maxsplit=1)
             data['filename'] = filename_repo
             repository_data.append(data)
@@ -43,6 +77,24 @@ def read_repo_data(repo_owner, repo_name):
     return repository_data, branch
 
 def sliding_window(seq, size, step):
+    """
+    Split a sequence (typically a string) into overlapping windows.
+ 
+    Args:
+        seq: The sequence to split (e.g. document text).
+        size: Length of each window.
+        step: How far to advance between windows. If step < size,
+            consecutive windows overlap — useful so information near a
+            chunk boundary isn't lost entirely to one side.
+ 
+    Returns:
+        A list of dicts, each with:
+        - 'start': the index in `seq` where this window begins.
+        - 'content': the windowed slice of `seq`.
+ 
+    Raises:
+        ValueError: if size or step is not positive.
+    """
     if size <= 0 or step <= 0:
         raise ValueError("size and step must be positive")
 
@@ -51,6 +103,8 @@ def sliding_window(seq, size, step):
     for i in range(0, n, step):
         batch = seq[i:i+size]
         result.append({'start': i, 'content': batch})
+        # Stop once a window reaches the end of the sequence, to avoid
+        # generating a trailing near-empty window past the content.
         if i + size > n:
             break
 
@@ -58,6 +112,21 @@ def sliding_window(seq, size, step):
 
 
 def chunk_documents(docs, size=2000, step=1000):
+    """
+    Split each document's content into smaller overlapping chunks,
+    while preserving the document's other metadata (e.g. filename) on
+    every resulting chunk.
+ 
+    Args:
+        docs: List of document dicts, each containing a 'content' field.
+        size: Chunk length, in characters, passed to sliding_window.
+        step: Step size, in characters, passed to sliding_window.
+ 
+    Returns:
+        A flat list of chunk dicts. Each chunk has 'start', 'content',
+        plus all of the original document's non-content fields (e.g.
+        'filename').
+    """
     chunks = []
 
     for doc in docs:
