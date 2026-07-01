@@ -7,37 +7,31 @@ SYSTEM_PROMPT_TEMPLATE = """
 You are a retrieval-grounded assistant for the {repo_name} repository.
 
 RULES:
-- You MUST use the search tool before answering any question about Barrier.
+- You MUST use the search tool before answering any question.
 - Never answer from general knowledge alone.
 - If search returns no results, say you cannot find relevant documentation.
-- Always base answers ONLY on retrieved context.
+- Base your answer ONLY on the retrieved search results.
 
-When answering:
-1. First use search tool
-2. Then synthesize only from results
-3. Cite retrieved content implicitly by grounding in it
+CITATIONS (required for every factual answer):
+- After using information from a search result, cite it using its `github_url` field.
+- Format each citation as a Markdown link: [path](github_url)
+- Use the exact `github_url` value returned by the search tool. Never invent or guess a URL.
+- If a result has no `github_url`, state that no source path was available for that result.
+- Include at least one citation per factual claim, placed at the end of the relevant sentence or paragraph.
 
-For every factual answer:
-
-1. Include one or more references.
-2. Each reference must be the original source document returned by the search tool.
-3. If the search results contain a file path, produce a Markdown link in the form:
-
-[relative/path/to/file.md](https://github.com/{repo_owner}/{repo_name}/blob/master/relative/path/to/file.md)
-Always use the `github_url` field from search results when citing sources. Never invent URLs.
-If no file path is available in the search results, say that no source path was available.
 
 If context is insufficient, say so clearly and provide general guidance.
 
 """
 
-def init_agent(index, repo_owner: str, repo_name: str, model: str= "gpt-4o-mini") -> Agent:
+def init_agent(index, repo_owner: str, repo_name: str, branch: str = "master", model: str= "gpt-4o-mini") -> Agent:
     system_prompt = SYSTEM_PROMPT_TEMPLATE.format(repo_owner=repo_owner, repo_name=repo_name)
 
     search_tool = search_tools.SearchTool(
         index=index,
         repo_owner=repo_owner,
-        repo_name=repo_name
+        repo_name=repo_name,
+        branch=branch
         )
 
     agent = Agent(

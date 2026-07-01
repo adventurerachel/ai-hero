@@ -36,7 +36,7 @@ def read_repo_data(repo_owner, repo_name):
     zf.close()
 
     print(f"[read_repo_data] downloaded from branch '{branch}', found {len(repository_data)} markdown documents")
-    return repository_data
+    return repository_data, branch
 
 def sliding_window(seq, size, step):
     if size <= 0 or step <= 0:
@@ -73,7 +73,7 @@ def index_data(
         chunk=False,
         chunking_params=None,
     ):
-    docs = read_repo_data(repo_owner, repo_name)
+    docs, branch = read_repo_data(repo_owner, repo_name)
     print(f"[index_data] total documents read: {len(docs)}")
     print(docs[0])
 
@@ -97,4 +97,4 @@ def index_data(
     index.fit(docs)
 
     print(f"[index_data] indexed {len(docs)} items into the search index")
-    return index
+    return index, branch
