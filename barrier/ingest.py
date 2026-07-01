@@ -8,10 +8,14 @@ from minsearch import Index
 
 def read_repo_data(repo_owner, repo_name):
     resp = None
-    for branch in ["main", "master"]:
+    for branch in ["master", "main"]:
         url = f"https://github.com/{repo_owner}/{repo_name}/archive/refs/heads/{branch}.zip"
         print(f"[read_repo_data] requesting {url}")
-        resp = requests.get(url, timeout=30)
+        try:
+            resp = requests.get(url, timeout=60)
+        except requests.exceptions.RequestException as e:
+            print(f"[read_repo_data] request failed for branch '{branch}: {e}")
+            continue
         print(f"[read_repo_data] got status {resp.status_code}")
         if resp.status_code == 200 and "zip" in resp.headers.get("Content-Type", ""):
             break
