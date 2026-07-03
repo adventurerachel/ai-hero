@@ -13,7 +13,7 @@ This repository documents my hands-on learning journey through AI engineering �
 
 ### `barrier/` — the finished project
 
-A deployed, cleaned-up RAG FAQ assistant for the [debauchee/barrier](https://github.com/debauchee/barrier) GitHub repository. This is the polished output of the learning process below — documented, debugged, and running ([live on Streamlit Community Cloud](https://adventurerachel-ai-agents-crash-course-barrierapp.streamlit.app/)).
+A deployed, cleaned-up RAG FAQ assistant for the [debauchee/barrier](https://github.com/debauchee/barrier) GitHub repository. This is the polished output of the learning process below — documented, debugged, and [running live on Streamlit Community Cloud](https://adventurerachel-ai-agents-crash-course-barrierapp.streamlit.app/).
 
 See [`barrier/README.md`](./barrier/README.md) for full details, setup instructions, and architecture.
 
