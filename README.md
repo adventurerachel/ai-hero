@@ -23,7 +23,7 @@ Jupyter notebooks (`.ipynb`) showing the practice work that led to `barrier/` â€
 
 ### `course/` â€” coursework exercises
 
-Notebooks (`.ipynb`) following along directly with the AI Engineering course material (SuperDataScience). These are closer to structured exercises than original work, kept here as a reference of concepts covered.
+Notebooks (`.ipynb`) following along directly with the AI Hero course material ([DataTalksClub's Data Engineering Zoomcamp](https://github.com/DataTalksClub)). These are closer to structured exercises than original work, kept here as a reference of concepts covered.
 
 ## A note on work-in-progress content
 
