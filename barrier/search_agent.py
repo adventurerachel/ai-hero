@@ -1,7 +1,18 @@
-# Creates and configures the Pydantic AI agent
+"""
+search_agent.py
+ 
+Creates and configures the pydantic-ai Agent for the Barrier AI FAQ
+assistant.
+ 
+Defines the system prompt that governs the agent's behaviour (mandatory
+search-before-answer, citation requirements) and init_agent(), which
+wires a fitted search index up as a callable "search" tool the LLM can
+invoke mid-conversation.
+"""
 
 import search_tools
 from pydantic_ai import Agent, Tool
+from minsearch import Index
 
 SYSTEM_PROMPT_TEMPLATE = """
 You are a retrieval-grounded assistant for the {repo_name} repository.
@@ -24,7 +35,13 @@ If context is insufficient, say so clearly and provide general guidance.
 
 """
 
-def init_agent(index, repo_owner: str, repo_name: str, branch: str = "master", model: str= "gpt-4o-mini") -> Agent:
+def init_agent(
+    index: Index, 
+    repo_owner: str, 
+    repo_name: str, 
+    branch: str = "master", 
+    model: str= "gpt-4o-mini"
+) -> Agent:
     system_prompt = SYSTEM_PROMPT_TEMPLATE.format(repo_owner=repo_owner, repo_name=repo_name)
 
     search_tool = search_tools.SearchTool(
@@ -42,6 +59,9 @@ def init_agent(index, repo_owner: str, repo_name: str, branch: str = "master", m
         tools=[
             Tool(
                 name="search",
+                # This description is part of the prompt: the LLM reads
+                # it to decide when the search tool should be called.
+
                 description="Searches the Barrier documentation and returns relevant passages",
                 function=search_tool.search
             )

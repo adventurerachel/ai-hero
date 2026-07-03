@@ -19,8 +19,34 @@ import frontmatter
 
 from minsearch import Index
 
+from typing import Any, Callable, Optional
 
-def read_repo_data(repo_owner, repo_name):
+def read_repo_data(repo_owner: str, repo_name: str) -> tuple[list[dict[str, Any]], str]:
+    """
+    Download a GitHub repository's Markdown documentation.
+ 
+    Tries the "master" branch first, then falls back to "main", since
+    repositories may use either as their default branch. Network failures
+    on one branch (timeouts, connection errors) don't stop the function —
+    it simply moves on to try the next branch.
+ 
+    Args:
+        repo_owner: GitHub username or organisation that owns the repo.
+        repo_name: Name of the repository.
+ 
+    Returns:
+        A tuple of:
+        - repository_data: list of dicts, one per Markdown file, each
+          containing at least 'content' (the document body) and
+          'filename' (path relative to the repo root).
+        - branch: the branch name ("master" or "main") the data was
+          successfully downloaded from.
+ 
+    Raises:
+        RuntimeError: if neither "master" nor "main" could be downloaded
+            (e.g. wrong repo name, both requests failed/timed out).
+    """
+
     resp = None
     for branch in ["master", "main"]:
         url = f"https://github.com/{repo_owner}/{repo_name}/archive/refs/heads/{branch}.zip"
@@ -76,7 +102,7 @@ def read_repo_data(repo_owner, repo_name):
     print(f"[read_repo_data] downloaded from branch '{branch}', found {len(repository_data)} markdown documents")
     return repository_data, branch
 
-def sliding_window(seq, size, step):
+def sliding_window(seq: str, size: int, step: int) -> list[dict[str, Any]]:
     """
     Split a sequence (typically a string) into overlapping windows.
  
@@ -111,7 +137,7 @@ def sliding_window(seq, size, step):
     return result
 
 
-def chunk_documents(docs, size=2000, step=1000):
+def chunk_documents(docs: list[dict[str, Any]], size: int = 2000, step: int=1000) -> list[dict[str, Any]]:
     """
     Split each document's content into smaller overlapping chunks,
     while preserving the document's other metadata (e.g. filename) on
@@ -130,22 +156,50 @@ def chunk_documents(docs, size=2000, step=1000):
     chunks = []
 
     for doc in docs:
+        # Copy to avoid mutating the original document dict.
         doc_copy = doc.copy()
         doc_content = doc_copy.pop('content')
         doc_chunks = sliding_window(doc_content, size=size, step=step)
+        # Re-attach the document's other fields (filename, etc.) onto
+        # every chunk so each chunk still knows which file it came from.
         for chunk in doc_chunks:
             chunk.update(doc_copy)
         chunks.extend(doc_chunks)
     return chunks
 
-
 def index_data(
-        repo_owner,
-        repo_name,
-        filter_func=None,
-        chunk=False,
-        chunking_params=None,
-    ):
+        repo_owner: str,
+        repo_name: str,
+        filter_func: Optional[Callable[[dict[str, Any]], bool]]=None,
+        chunk: bool = False,
+        chunking_params: Optional[dict[str, int]]=None,
+    ) -> tuple[Index, str]:
+    """
+    Build a searchable index of a GitHub repository's Markdown documentation.
+ 
+    This is the main entry point for the ingestion pipeline: it fetches,
+    optionally filters and chunks, then indexes the documents.
+ 
+    Args:
+        repo_owner: GitHub username or organisation that owns the repo.
+        repo_name: Name of the repository.
+        filter_func: Optional callable taking a document dict and
+            returning True/False, to include only documents matching
+            some condition (e.g. a specific folder).
+        chunk: If True, split long documents into smaller overlapping
+            chunks via chunk_documents before indexing.
+        chunking_params: Optional dict with 'size' and 'step' keys to
+            control chunking behaviour. Defaults to
+            {'size': 2000, 'step': 1000} if chunk=True and this is None.
+ 
+    Returns:
+        A tuple of:
+        - index: a fitted minsearch.Index over the 'content' and
+          'filename' fields, ready to be searched.
+        - branch: the branch name the source data was downloaded from
+          (needed downstream to build correct citation URLs).
+    """
+
     docs, branch = read_repo_data(repo_owner, repo_name)
     print(f"[index_data] total documents read: {len(docs)}")
     print(docs[0])

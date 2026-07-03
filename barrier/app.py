@@ -1,7 +1,28 @@
+"""
+app.py
+ 
+Streamlit UI for the Barrier AI FAQ assistant.
+ 
+Responsible for:
+1. Loading environment variables (e.g. API keys) from a .env file.
+2. Initialising the search index and LLM agent once per app process
+   (cached via st.cache_resource).
+3. Rendering the chat interface and streaming the agent's responses
+   token-by-token as they're generated.
+4. Logging each interaction for later review.
+"""
+
 # --- 1. LOAD ENVIRONMENT VARIABLES FIRST ---
+# Must happen before any modules that read env vars at import time
+# (e.g. API client libraries) are imported below.
 from pathlib import Path
+from typing import AsyncGenerator
 from dotenv import load_dotenv
 
+# Walk up from this script's own location through every parent folder
+# until a .env file is found, rather than assuming one sits in the
+# current working directory (which varies depending on how the app
+# is launched).
 env_path = Path(__file__).resolve()
 
 for parent in env_path.parents:
@@ -27,13 +48,31 @@ REPO_NAME = "barrier"
 
 @dataclass
 class StreamHolder:
-    """A simple container to capture the new messages after the async stream finishes."""
+    """
+    Mutable side-channel for retrieving data from an async generator
+    after it finishes streaming.
+ 
+    get_agent_stream() only yields text chunks via `yield`, so this
+    object is used to smuggle out result.new_messages() (needed for
+    logging) once streaming completes, without changing the generator's
+    yield type.
+    """
     new_messages: list = None
 
-def stream_async(async_gen):
+def stream_async(async_gen: AsyncGenerator[str, None]) -> Iterator[str]:
     """
-    Helper function to consume an async generator synchronously.
-    This allows us to stream async responses from pydantic-ai in Streamlit.
+    Consume an async generator synchronously, yielding each item as
+    it arrives.
+ 
+    Streamlit's main script execution is synchronous, but pydantic-ai's
+    streaming API is async. This bridges the two by manually driving
+    the async generator one step at a time on a dedicated event loop.
+ 
+    Args:
+        async_gen: An async generator yielding text chunks.
+ 
+    Yields:
+        Each text chunk, synchronously, in the order produced.
     """
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
@@ -47,23 +86,56 @@ def stream_async(async_gen):
         loop.close()
 
 # FIXED: Added 'agent' as an argument so the function has access to it
-async def get_agent_stream(agent, prompt, history, holder):
+async def get_agent_stream(
+        agent: Agent, 
+        prompt: str, 
+        history: list[ModelMessage], 
+        holder: StreamHolder
+    ) -> AsyncGenerator[str, None]:
     """
-    Async generator that yields text chunks from the pydantic-ai agent.
+    Async generator that yields the agent's response text as it streams in.
+ 
+    Args:
+        agent: The configured pydantic-ai Agent to run.
+        prompt: The user's current question.
+        history: Prior conversation turns, for context.
+        holder: A StreamHolder to populate with the run's new messages
+            once streaming completes, for later logging.
+ 
+    Yields:
+        The cumulative response text so far, each time more text
+        arrives (not just the newly added delta).
     """
     async with agent.run_stream(prompt, message_history=history) as result:
         # Stream the text output token by token
+        # debounce_by batches rapid token updates (every 10ms) rather
+        # than yielding on every single token, reducing UI re-render
+        # overhead.
         # (Note: depending on your exact pydantic-ai version, this might be stream_text() instead of stream_output())
         async for text in result.stream_text(debounce_by=0.01): 
             yield text
             
         # Once the stream is complete, capture the new messages for logging
+        # Only available once the stream has fully completed.
         holder.new_messages = result.new_messages()
 
 # --- STREAMLIT APP LOGIC ---
 
 @st.cache_resource
-def initialize_resources():
+def initialize_resources() -> Agent:
+    """
+    Download the repository, build the search index, and construct the
+    LLM agent.
+ 
+    Wrapped in @st.cache_resource so this expensive setup (network
+    download, index build, agent construction) runs exactly once per
+    app process, rather than on every Streamlit script rerun (which
+    happens on essentially every user interaction).
+ 
+    Returns:
+        A configured Agent, ready to answer questions about the
+        repository's documentation.
+    """
     st.write("Starting ingestion...")
     
     print("[initialize_resources] calling index_data...")        
@@ -72,6 +144,9 @@ def initialize_resources():
     st.write("Index created")
 
     print("[initialize_resources] calling init_agent...")
+    # branch is passed through so citation URLs point to the branch the
+    # documents were actually downloaded from, rather than assuming
+    # "master".  
     agent = search_agent.init_agent(index, REPO_OWNER, REPO_NAME, branch=branch)
     print("[initialize_resources] init_agent returned")
     st.write("Agent created")
@@ -79,7 +154,17 @@ def initialize_resources():
     return agent
 
 def build_message_history():
-    """Converts Streamlit session state messages into Pydantic AI message history format."""
+    """
+    Converts Streamlit session state messages into Pydantic AI message history format.
+
+    Excludes the most recent message, since that's the current user
+    prompt — it's passed separately as the primary `prompt` argument to
+    agent.run_stream(), not included in the history.
+ 
+    Returns:
+        A list of ModelRequest/ModelResponse objects representing the
+        prior conversation turns.
+"""
     history = []
     for msg in st.session_state.messages[:-1]:
         if msg["role"] == "user":
@@ -89,6 +174,10 @@ def build_message_history():
     return history
 
 def main():
+    """
+    Render the Streamlit chat interface and handle the request/response
+    cycle for each user question.
+    """
     st.set_page_config(page_title="AI FAQ Assistant", page_icon="🤖")
     st.title("AI FAQ Assistant: Barrier")
     st.caption(f"Repository: {REPO_OWNER}/{REPO_NAME}")
