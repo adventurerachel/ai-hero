@@ -1,0 +1,56 @@
+{
+  "agent_name": "barrier_rag_agent",
+  "system_prompt": null,
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "Who typically uses Barrier and why?",
+          "timestamp": "2026-06-28T22:30:45.439067+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "instructions": null,
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "Barrier is commonly used by a variety of individuals and professionals, including:\n\n1. **Developers and Programmers**: They may use multiple computers for different tasks (e.g., testing, coding) and find it convenient to control all of them with a single keyboard and mouse.\n\n2. **Content Creators**: Graphic designers, video editors, and other content creators often work with multiple machines and benefit from a unified control system to enhance their workflow.\n\n3. **System Administrators**: They may manage multiple servers or workstations in different environments and use Barrier to streamline their operations.\n\n4. **Home Office Users**: Many people working from home use multiple devices (like a laptop and desktop) and appreciate the convenience of switching between them without needing to switch peripherals.\n\n5. **Tech Enthusiasts**: Those who enjoy experimenting with different operating systems (e.g., Windows, macOS, Linux) often use Barrier to manage their setups more efficiently.\n\nThe primary reasons for using Barrier include improved productivity, reduced clutter from multiple keyboards and mice, and the ergonomic benefit of not having to switch devices manually. If you'd like to know more about specific use cases or features, just let me know!",
+          "id": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 176,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 242,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2026-06-28T22:30:45+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "stop"
+      },
+      "provider_response_id": "chatcmpl-DvsJRaVh51cNkWNR6qQWP953oSoYz",
+      "finish_reason": "stop"
+    }
+  ],
+  "source": "user"
+}

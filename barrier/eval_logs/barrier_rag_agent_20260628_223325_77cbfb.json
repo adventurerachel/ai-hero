@@ -1,0 +1,56 @@
+{
+  "agent_name": "barrier_rag_agent",
+  "system_prompt": null,
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "Is Barrier a KVM?",
+          "timestamp": "2026-06-28T22:33:25.456442+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "instructions": null,
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "Barrier is not a traditional KVM (Keyboard, Video, Mouse) switch. Instead, it is software that allows users to share a mouse and keyboard between multiple computers over a network, functioning similarly to a \"virtual KVM.\" Here are the key differences:\n\n1. **Hardware vs. Software**: \n   - A KVM switch is a physical device that connects multiple computers to a single set of peripherals (keyboard, mouse, monitor).\n   - Barrier is software that operates over a network, allowing control of multiple devices without the need for physical cabling or hardware.\n\n2. **Operating System Support**: \n   - Traditional KVMs typically require all connected computers to be compatible with the hardware.\n   - Barrier supports multiple operating systems (Windows, macOS, Linux), allowing you to share peripherals across different platforms seamlessly.\n\n3. **Monitor Sharing**: \n   - KVM devices usually require a monitor for each connected computer, as they pass video signals.\n   - Barrier does not transfer video signals; it only facilitates input control (mouse and keyboard).\n\n4. **Network Requirement**: \n   - Barrier requires that all devices be connected to the same network (via Ethernet or Wi-Fi) to communicate.\n   - A KVM switch operates independently of network connectivity.\n\nIn summary, while Barrier provides a similar outcome by enabling users to control multiple machines with one set of input devices, it does so as a software solution rather than a physical KVM device. If you have more questions or need additional clarification, feel free to ask!",
+          "id": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 1624,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 311,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2026-06-28T22:33:25+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "stop"
+      },
+      "provider_response_id": "chatcmpl-DvsM1f3JdsG8pp0U5dCS17Rj7MKMk",
+      "finish_reason": "stop"
+    }
+  ],
+  "source": "user"
+}

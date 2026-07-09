@@ -1,0 +1,56 @@
+{
+  "agent_name": "barrier_rag_agent",
+  "system_prompt": null,
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "What is Barrier?",
+          "timestamp": "2026-06-28T22:44:13.648722+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "instructions": null,
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "Barrier is an open-source software application that allows users to share a keyboard and mouse between multiple computers over a network. It enables seamless control of multiple devices (regardless of their operating systems, such as Windows, macOS, and Linux) as if they were a single workstation. Here are some key features and functionalities of Barrier:\n\n1. **Cross-Platform**: Barrier works across different operating systems, allowing users to control computers running different OS types from a single keyboard and mouse setup.\n\n2. **Seamless Input Switching**: Users can move their mouse cursor from one screen to another simply by moving it to the edge of the screen, similar to how multi-monitor setups work.\n\n3. **Clipboard Sharing**: Barrier supports clipboard sharing, enabling users to copy content from one computer and paste it on another.\n\n4. **Easy Setup**: The software is designed to be user-friendly, making it relatively easy to configure and use without a steep learning curve.\n\n5. **Open Source**: Barrier is free to use and is developed collaboratively by a community of contributors, allowing users to modify the software to suit their needs.\n\n6. **No Hardware Required**: Unlike traditional KVM switches, Barrier operates entirely through software, eliminating the need for additional hardware.\n\nBarrier is particularly popular among developers, content creators, and anyone who works with multiple computers, providing a streamlined and efficient workflow by reducing the clutter of multiple input devices. If you have more specific questions about its features or how to use it, feel free to ask!",
+          "id": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 1946,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 308,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2026-06-28T22:44:14+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "stop"
+      },
+      "provider_response_id": "chatcmpl-DvsWUoHm7cTrKWvfpTrc544lfvRwh",
+      "finish_reason": "stop"
+    }
+  ],
+  "source": "user"
+}

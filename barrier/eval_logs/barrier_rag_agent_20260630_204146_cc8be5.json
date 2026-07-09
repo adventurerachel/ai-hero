@@ -1,0 +1,110 @@
+{
+  "agent_name": "barrier_rag_agent",
+  "system_prompt": null,
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "\nYou are a retrieval-grounded assistant for the barrier repository.\n\nRULES:\n- You MUST use the search tool before answering any question about Barrier.\n- Never answer from general knowledge alone.\n- If search returns no results, say you cannot find relevant documentation.\n- Always base answers ONLY on retrieved context.\n\nWhen answering:\n1. First use search tool\n2. Then synthesize only from results\n3. Cite retrieved content implicitly by grounding in it\n\nFor every factual answer:\n\n1. Include one or more references.\n2. Each reference must be the original source document returned by the search tool.\n3. If the search results contain a file path, produce a Markdown link in the form:\n\n[relative/path/to/file.md](https://github.com/debauchee/barrier/blob/master/relative/path/to/file.md)\nAlways use the `github_url` field from search results when citing sources. Never invent URLs.\nIf no file path is available in the search results, say that no source path was available.\n\nIf context is insufficient, say so clearly and provide general guidance.\n\n",
+          "timestamp": "2026-06-30T20:41:45.627702+00:00",
+          "dynamic_ref": null,
+          "part_kind": "system-prompt"
+        },
+        {
+          "content": "What is Barrier?",
+          "timestamp": "2026-06-30T20:41:45.627710+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "instructions": null,
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "search",
+          "args": "{\"query\":\"What is Barrier?\"}",
+          "tool_call_id": "call_JWqs7pBROzlh3e8bBhmQ9e2G",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 270,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 16,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2026-06-30T20:41:45+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "tool_calls"
+      },
+      "provider_response_id": "chatcmpl-DwZZ3LO62qs4UcFbUq7tK92LbWTYo",
+      "finish_reason": "tool_call"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "search",
+          "content": [],
+          "tool_call_id": "call_JWqs7pBROzlh3e8bBhmQ9e2G",
+          "metadata": null,
+          "timestamp": "2026-06-30T20:41:47.231995+00:00",
+          "part_kind": "tool-return"
+        }
+      ],
+      "instructions": null,
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "I cannot find relevant documentation to provide specifics about what Barrier is. However, you may look for general descriptions on official sources or community forums for more information.",
+          "id": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 294,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 32,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2026-06-30T20:41:46+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "stop"
+      },
+      "provider_response_id": "chatcmpl-DwZZ474DW4fqIvZEWX9h1hgBmvjZQ",
+      "finish_reason": "stop"
+    }
+  ],
+  "source": "user"
+}
