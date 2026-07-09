@@ -1,0 +1,143 @@
+{
+  "agent_name": "barrier_agent_v2",
+  "system_prompt": [
+    "You are a helpful assistant for a KVM tool. \n\nUse the search tool to find relevant information from the course materials before answering questions.\n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \n\nWhen citing the reference, replace \"https://github.com/debauchee/barrier/blob/master/barrier-wiki-master\" by the full path to the GitHub repository: \"https://github.com/debauchee/barrier/wiki/\"\n\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nLeave a space after the link before any other characters to ensure that the link can be used/clickable.\n\nIf the search doesn't return relevant results, let the user know and provide general guidance."
+  ],
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "text_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "Can you explain what Immune Keys are in Barrier and when I might need to use them?",
+          "timestamp": "2026-06-07T22:17:35.578322+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "timestamp": "2026-06-07T22:17:35.579450+00:00",
+      "instructions": "You are a helpful assistant for a KVM tool. \n\nUse the search tool to find relevant information from the course materials before answering questions.\n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \n\nWhen citing the reference, replace \"https://github.com/debauchee/barrier/blob/master/barrier-wiki-master\" by the full path to the GitHub repository: \"https://github.com/debauchee/barrier/wiki/\"\n\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nLeave a space after the link before any other characters to ensure that the link can be used/clickable.\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request",
+      "run_id": "019ea429-ae57-715f-9056-6833f46a2242",
+      "conversation_id": "019ea429-ae57-715f-9056-683237be49b0",
+      "metadata": null
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "text_search",
+          "args": "{\"query\":\"Immune Keys\"}",
+          "tool_call_id": "call_AATvO6yzn1CZj2DkGFZ0D6Hz",
+          "tool_kind": null,
+          "id": null,
+          "provider_name": null,
+          "provider_details": null,
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 267,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 16,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2026-06-07T22:17:36.857821+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_url": "https://api.openai.com/v1/",
+      "provider_details": {
+        "finish_reason": "tool_calls",
+        "timestamp": "2026-06-07T22:17:35+00:00"
+      },
+      "provider_response_id": "chatcmpl-DoG6BWWjNC7gktHMysyEZX5UqBUHC",
+      "finish_reason": "tool_call",
+      "run_id": "019ea429-ae57-715f-9056-6833f46a2242",
+      "conversation_id": "019ea429-ae57-715f-9056-683237be49b0",
+      "metadata": null,
+      "state": "complete"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "text_search",
+          "content": [
+            {
+              "filename": "barrier-wiki-master/Immune-Keys.md",
+              "section": "## Overview\n\n### What are Immune Keys?\nImmune keys are keyboard keys that Barrier will not forward to other PCs. They are \"immune\" from being blocked on the host (server).\n\n### Why would I want them?\nYou probably don't. Barrier works best when your keyboard and mouse function as if they were physically attached to every connected client. There are situations, however, in which a user might not want a certain key or keys forwarded. In this case you would simply list them as immune keys and they will always pass directly to the host machine and never to a client.\n\n### What are the requirements?\nAt this time Immune Keys are a Windows-only feature; your keyboard must be connected to a Windows machine."
+            },
+            {
+              "filename": "barrier-wiki-master/Immune-Keys.md",
+              "section": "## Immune Keys Procedure\n\n- Check [this table](https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx) for the virtual key code value of the key you want to immune.\n- Create or open ImmuneKeys.txt inside your profile directory, %LocalAppData%\\Barrier by default, configurable with `--profile-dir` when running from [command line](Command-Line.md).\n- Add one line per key to this file, save it, and close it.\n  - Each line starts with a keycode in decimal or hexadecimal and can follow with human-readable text to use as a comment field.\n  - Any line that starts with a # is considered a comment line and is ignored. Blank lines are also ignored.\n- *Optional:* Depending on your use-case it may be necessary to prevent the server from elevating so that non-elevated server-side application will still be able to receive immune key notification while the client has focus. To do so change the Elevate option in settings to Never before restarting the host server in the step below.\n- Restart host server from the Barrier GUI (click Stop, then Start) to effect your changes.\n\n# Example Configuration\n\n    # this is a comment line. describe the reason for the following immune key here\n\n    # prevent Escape key from being forwarded to clients \n    0x1B\n\n    # you can also add comments after the keycode column\n    # everything after the keycode is ignored so no # is required\n\n    163 VK_RCONTROL (0xA3)\tfor discord muting"
+            }
+          ],
+          "tool_call_id": "call_AATvO6yzn1CZj2DkGFZ0D6Hz",
+          "tool_kind": null,
+          "metadata": null,
+          "timestamp": "2026-06-07T22:17:36.869843+00:00",
+          "outcome": "success",
+          "part_kind": "tool-return"
+        }
+      ],
+      "timestamp": "2026-06-07T22:17:36.871177+00:00",
+      "instructions": "You are a helpful assistant for a KVM tool. \n\nUse the search tool to find relevant information from the course materials before answering questions.\n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \n\nWhen citing the reference, replace \"https://github.com/debauchee/barrier/blob/master/barrier-wiki-master\" by the full path to the GitHub repository: \"https://github.com/debauchee/barrier/wiki/\"\n\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nLeave a space after the link before any other characters to ensure that the link can be used/clickable.\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request",
+      "run_id": "019ea429-ae57-715f-9056-6833f46a2242",
+      "conversation_id": "019ea429-ae57-715f-9056-683237be49b0",
+      "metadata": null
+    },
+    {
+      "parts": [
+        {
+          "content": "**Immune Keys** in Barrier are specific keyboard keys that the software does not forward to other connected PCs. This feature allows certain keys to remain \"immune\" to being blocked on the host (server) machine. \n\n### When to Use Immune Keys\nYou might want to use Immune Keys in situations where you need certain keys to function exclusively on the host machine and not be sent to any client machines. For example, if you are running applications that require the use of specific keys (like the Escape key for exiting a program) or if you want more control over which keys are forwarded, you can list those keys as Immune Keys. \n\n### Requirements\nCurrently, Immune Keys is a feature exclusive to Windows, and your keyboard must be connected to a Windows machine to utilize this functionality.\n\n### Setup Process\nTo set up Immune Keys, you need to:\n1. Check the virtual key code for the key you want to mark as immune (this can be found in relevant documentation).\n2. Create or edit a file named `ImmuneKeys.txt` in your Barrier profile directory.\n3. List each key you want to be immune, using the key's code.\n4. Restart the Barrier server to apply your changes.\n\nFor example:\n```plaintext\n# prevent Escape key from being forwarded to clients \n0x1B\n```\n\nFor additional details, you can refer to the [Immune Keys documentation](https://github.com/debauchee/barrier/wiki/Immune-Keys).",
+          "id": null,
+          "provider_name": null,
+          "provider_details": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 825,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 304,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2026-06-07T22:17:40.066246+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_url": "https://api.openai.com/v1/",
+      "provider_details": {
+        "finish_reason": "stop",
+        "timestamp": "2026-06-07T22:17:36+00:00"
+      },
+      "provider_response_id": "chatcmpl-DoG6CK3fYTK1S3End39MphaTcKi2M",
+      "finish_reason": "stop",
+      "run_id": "019ea429-ae57-715f-9056-6833f46a2242",
+      "conversation_id": "019ea429-ae57-715f-9056-683237be49b0",
+      "metadata": null,
+      "state": "complete"
+    }
+  ],
+  "source": "ai-generated"
+}

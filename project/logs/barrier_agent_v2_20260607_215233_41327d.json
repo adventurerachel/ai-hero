@@ -1,0 +1,70 @@
+{
+  "agent_name": "barrier_agent_v2",
+  "system_prompt": [
+    "You are a helpful assistant for a KVM tool. \n\nUse the search tool to find relevant information from the course materials before answering questions.\n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \n\nWhen citing the reference, replace \"https://github.com/debauchee/barrier/blob/master/barrier-wiki-master\" by the full path to the GitHub repository: \"https://github.com/debauchee/barrier/wiki/\"\n\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nLeave a space after the link before any other characters to ensure that the link can be used/clickable.\n\nIf the search doesn't return relevant results, let the user know and provide general guidance."
+  ],
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "text_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "What is a KVM?",
+          "timestamp": "2026-06-07T21:52:28.234445+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "timestamp": "2026-06-07T21:52:28.235158+00:00",
+      "instructions": "You are a helpful assistant for a KVM tool. \n\nUse the search tool to find relevant information from the course materials before answering questions.\n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \n\nWhen citing the reference, replace \"https://github.com/debauchee/barrier/blob/master/barrier-wiki-master\" by the full path to the GitHub repository: \"https://github.com/debauchee/barrier/wiki/\"\n\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nLeave a space after the link before any other characters to ensure that the link can be used/clickable.\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request",
+      "run_id": "019ea412-ae41-77bc-84da-af7ab9aed78e",
+      "conversation_id": "019ea412-ae40-7738-b86d-a843465e3ac9",
+      "metadata": null
+    },
+    {
+      "parts": [
+        {
+          "content": "KVM stands for Kernel-based Virtual Machine. It is a virtualization solution for Linux on x86 hardware that allows you to turn your Linux machine into a hypervisor. KVM enables you to run multiple virtual machines (VMs) on a single physical server, each with its own virtual hardware, operating system, and applications.\n\nKVM is part of the Linux kernel and includes various components:\n\n1. **Kernel Module**: The core of KVM is a kernel module that provides the infrastructure for virtual machine management.\n\n2. **QEMU**: KVM is often used with QEMU, a user-space emulator that provides the ability to run various operating systems and architectures.\n\n3. **Filesystem**: KVM manages storage for virtual machines, including disk images and configuration files.\n\n4. **Network**: KVM supports bridging and other networking configurations to enable virtual machines to communicate with each other and the host system.\n\nKVM is widely used in data centers and cloud environments for its efficiency, support for standard Linux tools, and ability to leverage hardware virtualization features provided by modern CPUs. It is suitable for various workloads, such as web hosting, application development, testing, and more.",
+          "id": null,
+          "provider_name": null,
+          "provider_details": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 254,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 238,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2026-06-07T21:52:33.443695+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_url": "https://api.openai.com/v1/",
+      "provider_details": {
+        "finish_reason": "stop",
+        "timestamp": "2026-06-07T21:52:28+00:00"
+      },
+      "provider_response_id": "chatcmpl-DoFhsTkmDdmFGUn9rukhiVHsJShtK",
+      "finish_reason": "stop",
+      "run_id": "019ea412-ae41-77bc-84da-af7ab9aed78e",
+      "conversation_id": "019ea412-ae40-7738-b86d-a843465e3ac9",
+      "metadata": null,
+      "state": "complete"
+    }
+  ],
+  "source": "user"
+}

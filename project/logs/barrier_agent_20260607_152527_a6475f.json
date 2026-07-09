@@ -1,0 +1,155 @@
+{
+  "agent_name": "barrier_agent",
+  "system_prompt": [
+    "\nYou are a helpful assistant for a KVM tool. \n\nUse the search tool to find relevant information from the course materials before answering questions.\n\nIf you can find specific information through search, use it to provide accurate answers.\nIf the search doesn't return relevant results, let the user know and provide general guidance.\n\n"
+  ],
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "text_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "can I run barrier on Mac OS?",
+          "timestamp": "2026-06-07T15:25:24.361042+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "timestamp": "2026-06-07T15:25:24.362030+00:00",
+      "instructions": "You are a helpful assistant for a KVM tool. \n\nUse the search tool to find relevant information from the course materials before answering questions.\n\nIf you can find specific information through search, use it to provide accurate answers.\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request",
+      "run_id": "019ea2b0-5007-70dd-9fe8-3618673b396a",
+      "conversation_id": "019ea2b0-5007-70dd-9fe8-3617f4ccd770",
+      "metadata": null
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "text_search",
+          "args": "{\"query\":\"Barrier Mac OS compatibility\"}",
+          "tool_call_id": "call_NJfeq1QB82EkATUX2vm7hnNk",
+          "tool_kind": null,
+          "id": null,
+          "provider_name": null,
+          "provider_details": null,
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 161,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 17,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2026-06-07T15:25:25.700862+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_url": "https://api.openai.com/v1/",
+      "provider_details": {
+        "finish_reason": "tool_calls",
+        "timestamp": "2026-06-07T15:25:25+00:00"
+      },
+      "provider_response_id": "chatcmpl-Do9fJhO5Cxaya1xI3d7ZHkYmKoBgl",
+      "finish_reason": "tool_call",
+      "run_id": "019ea2b0-5007-70dd-9fe8-3618673b396a",
+      "conversation_id": "019ea2b0-5007-70dd-9fe8-3617f4ccd770",
+      "metadata": null,
+      "state": "complete"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "text_search",
+          "content": [
+            {
+              "filename": "barrier-wiki-master/Troubleshooting.md",
+              "section": "## Document Conventions\n\n- Text in angle brackets `<text>` is input supplied by the user\n- Text in _italics_ are user interface elements, items on-screen, or filenames\n- Text in a `monospaced font` are keyboard shortcuts, prompts, commands, or command output"
+            },
+            {
+              "filename": "barrier-wiki-master/Troubleshooting.md",
+              "section": "## Things to Check\n\n- [The Command Line](#command_line)\n- [Processes Running](#processes_running)\n- [Server Reachability](#server_reachability)\n- [Server Listening](#server_listening)\n- [Multiple Instances](#multiple_instances)\n- [Fingerprint Trust](#fingerprint_trust)"
+            },
+            {
+              "filename": "barrier-wiki-master/Troubleshooting.md",
+              "section": "## <a name=\"command_line\">Command Line</a>\n\nMost of the tools used to troubleshoot in this guide are run from a text-based command line. These are some possible steps to get to the command line interface.\n\n__Note:__ None of the below commands should require elevated access (`Administrator cmd.exe`, `sudo`, `su`, `doas`, or equivalent) unless specified.\n\n### Windows Command Prompt\n1. Press the `(\u229e Win) + R` to open the _Run_ dialog\n2. In the _Open:_ textbox, type `cmd` and click _OK_\n\n### Windows PowerShell\n1. Press the `(\u229e Win) + R` to open the _Run_ dialog\n2. In the _Open:_ textbox, type `powershell` and click _OK_\n\n### MacOS Terminal.app\n1. Press `(\u2318 Cmd) + Space` to open _Spotlight_ search\n2. Type `Terminal.app` and press `Enter`\n\n### Linux Virtual Terminal\nThere are many ways to open a terminal emulator in the GUI on various linux distributions. If you do not know how to access a terminal emulator (`xterm`, `konsole`, `gnome-terminal`, etc...) the steps for accessing the console are fairly standard. Press `Ctrl + Alt` and one of the Function keys (usually `F1` through `F7`) to switch between back and forth between the GUI and virtual terminals. \n\n[Back to Top](#top)"
+            },
+            {
+              "filename": "barrier-wiki-master/Troubleshooting.md",
+              "section": "## <a name=\"fingerprint_trust\">Fingerprint Trust</a>\n\nBarrier uses fingerprints to validate that a malicious server is not trying to intercept a client connection. These fingerprints may be automatically generated if _Auto Config_ is selected in the client. If your client does not trust the fingerprint it will refuse the connection.\n\nThe _TrustedServers.txt_ file should contain the fingerprint found in the _Local.txt_ file on the server.\n\n### View the server fingerprint in the GUI\n- Open the main Barrier GUI window\n- The _SSL Fingerprint:_ field in the _Server_ section shows the current server fingerprint\n\n### View the fingerprints on Windows\n- Open _File Explorer_\n- In the _path bar_ enter `%LocalAppData%\\Barrier\\SSL\\Fingerprints`\n- Double-click either _Local.txt_ for the server fingerprints, or _TrustedServers.txt_ to view the fingerprints trusted by the client\n\n### View the fingerprints on MacOS\n- To view the trusted fingerprints on the client use the [more](https://en.wikipedia.org/wiki/More_(command)) command to view the _TrustedServers.txt_ file:\n```shell\nmore ~/Library/Application\\ Support/barrier/SSL/Fingerprints/TrustedServers.txt\n```\n- To view the server fingerprint on the server use the `more` command again:\n```\nmore ~/Library/Application\\ Support/barrier/SSL/Fingerprints/Local.txt\n```\n\n### View the trusted fingerprints on Linux or Unix\n- To view the trusted fingerprints on the client use the [more](https://en.wikipedia.org/wiki/More_(command)) command to view the _TrustedServers.txt_ file:\n```shell\nmore ~/.local/share/barrier/SSL/Fingerprints/TrustedServers.txt\n```\n- To view the server fingerprint on the server use the `more` command again:\n```shell\nmore ~/.local/share/barrier/SSL/Fingerprints/Local.txt\n```\n\nOn Linux or Unix systems the barrier _TrustedServers.txt_ or _Local.txt_ files may not always be in the same place depending on your system configuration. If they are elsewhere, use the [find](https://en.wikipedia.org/wiki/Find_(Unix)) command to locate them.\n```\nfind / -type f -name '*TrustedServers.txt' 2>/dev/null\nfind / -type f -name '*Local.txt' 2>/dev/null\n```\n__Note 1:__ These `find` commands may find other files with the same names. Check that the path includes `barrier`\n\n__Note 2:__ The `2>/dev/null` is to hide _Permission denied_ errors you would otherwise get from searching directories you do not have permission for as a normal user\n\n__Steps to try if unsuccessful:__\n- Try to copy & paste the contents of _Local.txt_ on the server into the _TrustedServers.txt_ file manually\n\n[Back to Top](#top)"
+            },
+            {
+              "filename": "barrier-wiki-master/Troubleshooting.md",
+              "section": "## <a name=\"multiple_instances\">Multiple Instances</a>\n\nMultiple instances of the background services that Barrier uses (`barriers` on the server, and `barrierc` on the client) can cause issues. For example, if another `barriers` process is running in the backround it will prevent the current process from binding to port `24800` and you may see incorrect status in the GUI.\n\n### Windows\n- Press `Ctrl + Shift + Esc` to open the _Task Manager_\n- Click on the _Details_ tab and click on the _Name_ header to sort by name\n- Make sure there is only one `barrier.exe` process if the GUI is running\n- Make sure there is only one `barriers.exe` and one `barrierd.exe` process if the server is running\n- Make sure there is only one `barrierc.exe` and one `barrierd.exe` process if the client is running\n\n### Linux/Unix/MacOS\n- Use `grep` and `ps` to find barrier processes\n```shell\nps -ax -o user,pid,command | grep -i [b]arrier\n```\n- Make sure there is only one `barrier` process if the GUI is running\n- Make sure there is only one `barriers` process if the server is running\n- Make sure there is only one `barrierc` process if the client is running\n\n__Note:__ The barrier command line arguments may make a single command wrap on the terminal to more than one line\n\n__Steps to try if unsuccessful:__\n- Try stopping all of the barrier processes (_End Task_ on Windows, `kill <pid>` on Linux/Unix/MacOS) and relaunching the program\n- Try restarting the computer\n\n[Back to Top](#top)"
+            }
+          ],
+          "tool_call_id": "call_NJfeq1QB82EkATUX2vm7hnNk",
+          "tool_kind": null,
+          "metadata": null,
+          "timestamp": "2026-06-07T15:25:25.715085+00:00",
+          "outcome": "success",
+          "part_kind": "tool-return"
+        }
+      ],
+      "timestamp": "2026-06-07T15:25:25.715850+00:00",
+      "instructions": "You are a helpful assistant for a KVM tool. \n\nUse the search tool to find relevant information from the course materials before answering questions.\n\nIf you can find specific information through search, use it to provide accurate answers.\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request",
+      "run_id": "019ea2b0-5007-70dd-9fe8-3618673b396a",
+      "conversation_id": "019ea2b0-5007-70dd-9fe8-3617f4ccd770",
+      "metadata": null
+    },
+    {
+      "parts": [
+        {
+          "content": "Yes, you can run Barrier on Mac OS. The application is compatible with macOS, and you can run it using the Terminal app. If you need more specific information on how to install or troubleshoot Barrier on Mac, please let me know!",
+          "id": null,
+          "provider_name": null,
+          "provider_details": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 1748,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 50,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2026-06-07T15:25:27.574713+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_url": "https://api.openai.com/v1/",
+      "provider_details": {
+        "finish_reason": "stop",
+        "timestamp": "2026-06-07T15:25:25+00:00"
+      },
+      "provider_response_id": "chatcmpl-Do9fJCfpefEi5cB4k0OwgI6xEbH2C",
+      "finish_reason": "stop",
+      "run_id": "019ea2b0-5007-70dd-9fe8-3618673b396a",
+      "conversation_id": "019ea2b0-5007-70dd-9fe8-3617f4ccd770",
+      "metadata": null,
+      "state": "complete"
+    }
+  ],
+  "source": "user"
+}

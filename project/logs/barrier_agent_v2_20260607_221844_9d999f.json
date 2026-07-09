@@ -1,0 +1,155 @@
+{
+  "agent_name": "barrier_agent_v2",
+  "system_prompt": [
+    "You are a helpful assistant for a KVM tool. \n\nUse the search tool to find relevant information from the course materials before answering questions.\n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \n\nWhen citing the reference, replace \"https://github.com/debauchee/barrier/blob/master/barrier-wiki-master\" by the full path to the GitHub repository: \"https://github.com/debauchee/barrier/wiki/\"\n\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nLeave a space after the link before any other characters to ensure that the link can be used/clickable.\n\nIf the search doesn't return relevant results, let the user know and provide general guidance."
+  ],
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "text_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "What steps do I need to take to add Barrier to the Windows Firewall?",
+          "timestamp": "2026-06-07T22:18:39.283511+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "timestamp": "2026-06-07T22:18:39.285187+00:00",
+      "instructions": "You are a helpful assistant for a KVM tool. \n\nUse the search tool to find relevant information from the course materials before answering questions.\n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \n\nWhen citing the reference, replace \"https://github.com/debauchee/barrier/blob/master/barrier-wiki-master\" by the full path to the GitHub repository: \"https://github.com/debauchee/barrier/wiki/\"\n\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nLeave a space after the link before any other characters to ensure that the link can be used/clickable.\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request",
+      "run_id": "019ea42a-a72e-7096-90a7-5722290a53c7",
+      "conversation_id": "019ea42a-a72e-7096-90a7-5721a365c6e0",
+      "metadata": null
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "text_search",
+          "args": "{\"query\":\"add Barrier to Windows Firewall\"}",
+          "tool_call_id": "call_yI5SOgQisAXiD9Xh3oZEy1fp",
+          "tool_kind": null,
+          "id": null,
+          "provider_name": null,
+          "provider_details": null,
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 263,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 18,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2026-06-07T22:18:40.556419+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_url": "https://api.openai.com/v1/",
+      "provider_details": {
+        "finish_reason": "tool_calls",
+        "timestamp": "2026-06-07T22:18:39+00:00"
+      },
+      "provider_response_id": "chatcmpl-DoG7DZwm9M2Ui2URvlUybtinGXDOf",
+      "finish_reason": "tool_call",
+      "run_id": "019ea42a-a72e-7096-90a7-5722290a53c7",
+      "conversation_id": "019ea42a-a72e-7096-90a7-5721a365c6e0",
+      "metadata": null,
+      "state": "complete"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "text_search",
+          "content": [
+            {
+              "filename": "barrier-wiki-master/Adding-Barrier-to-the-Windows-Firewall.md",
+              "section": "## Adding Barrier to the Windows Firewall\n\nScreenshots captured by [l0o0](https://github.com/l0o0)\n\n![search windows defender](https://user-images.githubusercontent.com/2743744/49057950-ca40bd00-f23c-11e8-9fef-be3f440e74b3.png)\n\n![click here to add exceptions](https://user-images.githubusercontent.com/2743744/49057956-cf057100-f23c-11e8-8b70-1bb4d6af8e58.png)\n\n![3rd step](https://user-images.githubusercontent.com/2743744/49057960-d3318e80-f23c-11e8-9631-01e038d5e818.png)\n\n![4th step](https://user-images.githubusercontent.com/2743744/49057961-d462bb80-f23c-11e8-9758-b52c38c46644.png)"
+            },
+            {
+              "filename": "barrier-wiki-master/Building-on-Windows.md",
+              "section": "## What's next?\n\n### Local changes\n\nFeel free to make whatever changes you like to your local copy of Barrier. Barrier is open-source and licensed under the GPL so as long as you abide by the [license](https://raw.githubusercontent.com/debauchee/barrier/master/LICENSE) then you're completely fine. Have fun!\n\n### Submitting patches\n\nIf you make a change to Barrier's source that you think would benefit others, fork the project on GitHub and submit a pull request. If we agree that the patch would improve Barrier for a wide range of users then we may merge it. At this point it will have become an \"official\" change and you'll be credited in the commit log. Isn't open-source wonderful? :)"
+            },
+            {
+              "filename": "barrier-wiki-master/Building-on-Windows.md",
+              "section": "## Customization\n\nYou will likely need to tweak a few knobs to complete the build. The easiest way to override build paths locally is to create a file called winbuild_env.bat in the root of your Barrier tree. This file is sourced before any build commands are executed so it's a good place to put environmental overrides. The most common ones are B_QT_ROOT to tell the build where your MSVC Qt folder is, and B_BUILD_TYPE when you're ready for your Release build.\n\n    set B_QT_ROOT=E:\\Qt\\5.13.0\\msvc2017_64\n\n    REM Uncomment when ready for a release build\n    REM set B_BUILD_TYPE=Release"
+            },
+            {
+              "filename": "barrier-wiki-master/Building-on-Windows.md",
+              "section": "## Before You Start\n\nYou should be at least moderately comfortable with Git, CMake, and the Windows command prompt before relying on this method. It requires a good bit of free hard drive space due to the large amount of dependencies required for the build (see below) and is meant for programmers that want to help us discover and fix programming errors.  When in doubt go for [binaries](Home) instead!\n\n# How to Build Barrier under Windows\n\n*as of 08-18-2019*\n\nI am using Windows 10 64-Bit English 1903\n\n- install [Visual Studio Community](https://visualstudio.microsoft.com/vs/community/)\n  - Select Desktop development with C++\n- install [CMake](https://cmake.org/download/)\n- install [Qt (Open Source)](https://www.qt.io/download)\n    - download the installer\n    - on the select components screen, check the Qt version you want, I used `5.13.x`, `x` being the latest.\n- install [Bonjour SDK for Windows](https://developer.apple.com/bonjour/)\n    - requries an account to download\n    - *warning:* will install into `Program Files` regardless\n- download the Barrier source code\n    - either clone it via Git\n    - or download the release archive and extract it\n- edit lines 4--8 in `clean_build.bat` accordingly, these are mine:\n\n      set B_BUILD_TYPE=Debug\n      set B_QT_ROOT=E:\\dev\\Qt\n      set B_QT_VER=5.13.0\n      set B_QT_MSVC=msvc2017_64\n      set B_BONJOUR=C:\\Program Files\\Bonjour SDK\n\n- open a *Developer Command Prompt for VS 2019*\n    - Start > Programs > Visual Studio 2019 > Visual Studio Tools > Developer Command Prompt for VS 2019\n- navigate to the Barrier folder\n- invoke `clean_build.bat`\n\nIf everything went well you should now have a working `barrier.exe` inside `build/bin/Debug`.\nI don't know whether a release build built this way is deployable."
+            },
+            {
+              "filename": "barrier-wiki-master/Troubleshooting.md",
+              "section": "## Document Conventions\n\n- Text in angle brackets `<text>` is input supplied by the user\n- Text in _italics_ are user interface elements, items on-screen, or filenames\n- Text in a `monospaced font` are keyboard shortcuts, prompts, commands, or command output"
+            }
+          ],
+          "tool_call_id": "call_yI5SOgQisAXiD9Xh3oZEy1fp",
+          "tool_kind": null,
+          "metadata": null,
+          "timestamp": "2026-06-07T22:18:40.581345+00:00",
+          "outcome": "success",
+          "part_kind": "tool-return"
+        }
+      ],
+      "timestamp": "2026-06-07T22:18:40.583658+00:00",
+      "instructions": "You are a helpful assistant for a KVM tool. \n\nUse the search tool to find relevant information from the course materials before answering questions.\n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \n\nWhen citing the reference, replace \"https://github.com/debauchee/barrier/blob/master/barrier-wiki-master\" by the full path to the GitHub repository: \"https://github.com/debauchee/barrier/wiki/\"\n\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nLeave a space after the link before any other characters to ensure that the link can be used/clickable.\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request",
+      "run_id": "019ea42a-a72e-7096-90a7-5722290a53c7",
+      "conversation_id": "019ea42a-a72e-7096-90a7-5721a365c6e0",
+      "metadata": null
+    },
+    {
+      "parts": [
+        {
+          "content": "To add Barrier to the Windows Firewall, follow these steps:\n\n1. **Open Windows Defender Firewall**:\n   - Click on the Start menu and type \"Windows Defender Firewall\".\n   - Click on \"Windows Defender Firewall with Advanced Security\".\n\n2. **Add an Exception**:\n   - In the Firewall window, look for \"Inbound Rules\" on the left pane.\n   - Click on \"New Rule\u2026\" on the right pane.\n\n3. **Choose Rule Type**:\n   - Select \"Program\" and click \"Next\".\n\n4. **Select the Program**:\n   - Browse to locate the Barrier executable (usually found in the installation directory) and select it.\n\n5. **Allow the Connection**:\n   - Choose \"Allow the connection\" and click \"Next\".\n\n6. **Select Profiles**:\n   - Decide when to apply this rule: Domain, Private, or Public. Select as appropriate for your network and click \"Next\".\n\n7. **Name the Rule**:\n   - Provide a name for the rule (e.g., \"Barrier\") and click \"Finish\".\n\nFor detailed steps and visual aids, you can refer to the specific documentation [here](https://github.com/debauchee/barrier/wiki/Adding-Barrier-to-the-Windows-Firewall). \n\nThis guide should assist you in successfully adding Barrier to the Windows Firewall settings.",
+          "id": null,
+          "provider_name": null,
+          "provider_details": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 1424,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 272,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2026-06-07T22:18:44.065216+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_url": "https://api.openai.com/v1/",
+      "provider_details": {
+        "finish_reason": "stop",
+        "timestamp": "2026-06-07T22:18:40+00:00"
+      },
+      "provider_response_id": "chatcmpl-DoG7E34FFhKReOwxOtdMhLpEXWNul",
+      "finish_reason": "stop",
+      "run_id": "019ea42a-a72e-7096-90a7-5722290a53c7",
+      "conversation_id": "019ea42a-a72e-7096-90a7-5721a365c6e0",
+      "metadata": null,
+      "state": "complete"
+    }
+  ],
+  "source": "ai-generated"
+}

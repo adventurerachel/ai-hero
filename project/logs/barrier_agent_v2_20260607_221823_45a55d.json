@@ -1,0 +1,172 @@
+{
+  "agent_name": "barrier_agent_v2",
+  "system_prompt": [
+    "You are a helpful assistant for a KVM tool. \n\nUse the search tool to find relevant information from the course materials before answering questions.\n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \n\nWhen citing the reference, replace \"https://github.com/debauchee/barrier/blob/master/barrier-wiki-master\" by the full path to the GitHub repository: \"https://github.com/debauchee/barrier/wiki/\"\n\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nLeave a space after the link before any other characters to ensure that the link can be used/clickable.\n\nIf the search doesn't return relevant results, let the user know and provide general guidance."
+  ],
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "text_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "What are the requirements for using Immune Keys and how do I configure them?",
+          "timestamp": "2026-06-07T22:18:16.287148+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "timestamp": "2026-06-07T22:18:16.288992+00:00",
+      "instructions": "You are a helpful assistant for a KVM tool. \n\nUse the search tool to find relevant information from the course materials before answering questions.\n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \n\nWhen citing the reference, replace \"https://github.com/debauchee/barrier/blob/master/barrier-wiki-master\" by the full path to the GitHub repository: \"https://github.com/debauchee/barrier/wiki/\"\n\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nLeave a space after the link before any other characters to ensure that the link can be used/clickable.\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request",
+      "run_id": "019ea42a-4d5c-75e9-a7a5-8e02fba77d5d",
+      "conversation_id": "019ea42a-4d5c-75e9-a7a5-8e01456da616",
+      "metadata": null
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "text_search",
+          "args": "{\"query\": \"Immune Keys requirements\"}",
+          "tool_call_id": "call_BxOKb8X2FKyibNycgxIv1Jum",
+          "tool_kind": null,
+          "id": null,
+          "provider_name": null,
+          "provider_details": null,
+          "part_kind": "tool-call"
+        },
+        {
+          "tool_name": "text_search",
+          "args": "{\"query\": \"Immune Keys configuration\"}",
+          "tool_call_id": "call_PHdGbHosoInH4zx9xtsOCExx",
+          "tool_kind": null,
+          "id": null,
+          "provider_name": null,
+          "provider_details": null,
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 264,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 50,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2026-06-07T22:18:17.339997+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_url": "https://api.openai.com/v1/",
+      "provider_details": {
+        "finish_reason": "tool_calls",
+        "timestamp": "2026-06-07T22:18:16+00:00"
+      },
+      "provider_response_id": "chatcmpl-DoG6qacRKUlSVk7k5XD4678vFPZL4",
+      "finish_reason": "tool_call",
+      "run_id": "019ea42a-4d5c-75e9-a7a5-8e02fba77d5d",
+      "conversation_id": "019ea42a-4d5c-75e9-a7a5-8e01456da616",
+      "metadata": null,
+      "state": "complete"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "text_search",
+          "content": [
+            {
+              "filename": "barrier-wiki-master/Immune-Keys.md",
+              "section": "## Overview\n\n### What are Immune Keys?\nImmune keys are keyboard keys that Barrier will not forward to other PCs. They are \"immune\" from being blocked on the host (server).\n\n### Why would I want them?\nYou probably don't. Barrier works best when your keyboard and mouse function as if they were physically attached to every connected client. There are situations, however, in which a user might not want a certain key or keys forwarded. In this case you would simply list them as immune keys and they will always pass directly to the host machine and never to a client.\n\n### What are the requirements?\nAt this time Immune Keys are a Windows-only feature; your keyboard must be connected to a Windows machine."
+            },
+            {
+              "filename": "barrier-wiki-master/Immune-Keys.md",
+              "section": "## Immune Keys Procedure\n\n- Check [this table](https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx) for the virtual key code value of the key you want to immune.\n- Create or open ImmuneKeys.txt inside your profile directory, %LocalAppData%\\Barrier by default, configurable with `--profile-dir` when running from [command line](Command-Line.md).\n- Add one line per key to this file, save it, and close it.\n  - Each line starts with a keycode in decimal or hexadecimal and can follow with human-readable text to use as a comment field.\n  - Any line that starts with a # is considered a comment line and is ignored. Blank lines are also ignored.\n- *Optional:* Depending on your use-case it may be necessary to prevent the server from elevating so that non-elevated server-side application will still be able to receive immune key notification while the client has focus. To do so change the Elevate option in settings to Never before restarting the host server in the step below.\n- Restart host server from the Barrier GUI (click Stop, then Start) to effect your changes.\n\n# Example Configuration\n\n    # this is a comment line. describe the reason for the following immune key here\n\n    # prevent Escape key from being forwarded to clients \n    0x1B\n\n    # you can also add comments after the keycode column\n    # everything after the keycode is ignored so no # is required\n\n    163 VK_RCONTROL (0xA3)\tfor discord muting"
+            }
+          ],
+          "tool_call_id": "call_BxOKb8X2FKyibNycgxIv1Jum",
+          "tool_kind": null,
+          "metadata": null,
+          "timestamp": "2026-06-07T22:18:17.355306+00:00",
+          "outcome": "success",
+          "part_kind": "tool-return"
+        },
+        {
+          "tool_name": "text_search",
+          "content": [
+            {
+              "filename": "barrier-wiki-master/Immune-Keys.md",
+              "section": "## Overview\n\n### What are Immune Keys?\nImmune keys are keyboard keys that Barrier will not forward to other PCs. They are \"immune\" from being blocked on the host (server).\n\n### Why would I want them?\nYou probably don't. Barrier works best when your keyboard and mouse function as if they were physically attached to every connected client. There are situations, however, in which a user might not want a certain key or keys forwarded. In this case you would simply list them as immune keys and they will always pass directly to the host machine and never to a client.\n\n### What are the requirements?\nAt this time Immune Keys are a Windows-only feature; your keyboard must be connected to a Windows machine."
+            },
+            {
+              "filename": "barrier-wiki-master/Immune-Keys.md",
+              "section": "## Immune Keys Procedure\n\n- Check [this table](https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx) for the virtual key code value of the key you want to immune.\n- Create or open ImmuneKeys.txt inside your profile directory, %LocalAppData%\\Barrier by default, configurable with `--profile-dir` when running from [command line](Command-Line.md).\n- Add one line per key to this file, save it, and close it.\n  - Each line starts with a keycode in decimal or hexadecimal and can follow with human-readable text to use as a comment field.\n  - Any line that starts with a # is considered a comment line and is ignored. Blank lines are also ignored.\n- *Optional:* Depending on your use-case it may be necessary to prevent the server from elevating so that non-elevated server-side application will still be able to receive immune key notification while the client has focus. To do so change the Elevate option in settings to Never before restarting the host server in the step below.\n- Restart host server from the Barrier GUI (click Stop, then Start) to effect your changes.\n\n# Example Configuration\n\n    # this is a comment line. describe the reason for the following immune key here\n\n    # prevent Escape key from being forwarded to clients \n    0x1B\n\n    # you can also add comments after the keycode column\n    # everything after the keycode is ignored so no # is required\n\n    163 VK_RCONTROL (0xA3)\tfor discord muting"
+            }
+          ],
+          "tool_call_id": "call_PHdGbHosoInH4zx9xtsOCExx",
+          "tool_kind": null,
+          "metadata": null,
+          "timestamp": "2026-06-07T22:18:17.367425+00:00",
+          "outcome": "success",
+          "part_kind": "tool-return"
+        }
+      ],
+      "timestamp": "2026-06-07T22:18:17.368777+00:00",
+      "instructions": "You are a helpful assistant for a KVM tool. \n\nUse the search tool to find relevant information from the course materials before answering questions.\n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \n\nWhen citing the reference, replace \"https://github.com/debauchee/barrier/blob/master/barrier-wiki-master\" by the full path to the GitHub repository: \"https://github.com/debauchee/barrier/wiki/\"\n\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nLeave a space after the link before any other characters to ensure that the link can be used/clickable.\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request",
+      "run_id": "019ea42a-4d5c-75e9-a7a5-8e02fba77d5d",
+      "conversation_id": "019ea42a-4d5c-75e9-a7a5-8e01456da616",
+      "metadata": null
+    },
+    {
+      "parts": [
+        {
+          "content": "### Requirements for Using Immune Keys\n\nImmune keys are a feature in Barrier that allows certain keyboard keys not to be forwarded to other connected PCs. Here are the specific requirements:\n\n- **Operating System**: Immune keys are currently supported only on **Windows** machines. \n- **Keyboard Connection**: The keyboard must be connected to a **Windows machine** for the immune keys feature to work effectively.\n\n### Configuration of Immune Keys\n\nTo configure immune keys, follow these steps:\n\n1. **Identify Key Codes**: Check the virtual key code value for the key you want to set as immune using [this MSDN table](https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx).\n\n2. **Create or Edit the Configuration File**:\n   - Locate the file named `ImmuneKeys.txt`. By default, this is found in your profile directory at `%LocalAppData%\\Barrier`. You can also specify a custom profile directory using the `--profile-dir` command line option when starting Barrier.\n   - Add one line per key in this file. \n      - Each line should start with the key code in either decimal or hexadecimal format. You can add a comment in human-readable text following the key code.\n      - Lines starting with `#` will be treated as comments and ignored. Blank lines are also ignored.\n\n3. **Optional Setting**: If needed, change the Elevate option in the settings to \"Never\" to ensure that non-elevated server-side applications can receive notifications for the immune keys even when the client is focused.\n\n4. **Restart the Barrier Host Server**:\n   - Use the Barrier GUI to stop and start the host server (click Stop, then Start) to apply your changes.\n\n### Example Configuration\n\nHere\u2019s how you can format your `ImmuneKeys.txt`:\n\n```\n# Prevent Escape key from being forwarded to clients\n0x1B\n\n# Comment for Right Control key\n163 VK_RCONTROL (0xA3)  # for discord muting\n```\n\nWith these steps and configurations, you will be able to set up immune keys effectively in Barrier.\n\nFor more detailed information, you can refer to the source file: [Immune Keys documentation](https://github.com/debauchee/barrier/wiki/Immune-Keys)",
+          "id": null,
+          "provider_name": null,
+          "provider_details": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 1405,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 477,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2026-06-07T22:18:23.232271+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_url": "https://api.openai.com/v1/",
+      "provider_details": {
+        "finish_reason": "stop",
+        "timestamp": "2026-06-07T22:18:17+00:00"
+      },
+      "provider_response_id": "chatcmpl-DoG6rhWQ5lEisXqpbxjRppF8cyBMd",
+      "finish_reason": "stop",
+      "run_id": "019ea42a-4d5c-75e9-a7a5-8e02fba77d5d",
+      "conversation_id": "019ea42a-4d5c-75e9-a7a5-8e01456da616",
+      "metadata": null,
+      "state": "complete"
+    }
+  ],
+  "source": "ai-generated"
+}
